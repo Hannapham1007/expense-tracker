@@ -19,6 +19,7 @@ function LoginForm() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    console.log(API_URL);
     try {
       const res = await fetch(`${API_URL}/auth/signin`, {
         method: "POST",
