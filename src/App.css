@@ -1,0 +1,130 @@
+* {
+  box-sizing: border-box;
+  font-family: "Open Sans", sans-serif;
+  line-height: 1.6;
+  color: var(--text-color);
+}
+:root{
+  --primary-color: #6161ff;
+  --secondary-color: #00ca72;
+  --accent-color: #ffcc00;
+  --accent-color-second: #fb275d;
+
+  /*BACKGROUND COLORS*/
+  --background-color: #ffffff;
+  --secondary-background-color:#f5f7ff;
+  --button-background-color: #ececff;
+  --balance-background-income: #ececff;
+ /* --balance-background-expense: #fff8d9;*/
+  --balance-background-expense: #fce5e4;
+  --balance-background-balance: #e0f8ee;
+
+  /*TEXT COLORS*/
+  --text-color: #000000;
+  --text-color-button: #ffffff;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+a {
+  text-decoration: none;
+  font-weight: bold;
+}
+ul {
+  list-style: none;
+}
+.btn-link {
+  color: #444444;
+  font-size: small;
+}
+.btn-link:hover {
+  color: #444444;
+}
+.list-group-flush {
+  border-bottom: 1px solid lightgrey;
+}
+
+/*ON ACTIVE SIDEBAR*/
+.active{
+  background-color: var(--button-background-color);
+}
+.active-icon {
+  color: #6161ff;
+}
+
+.active-text {
+  color: #6161ff;
+}
+
+.sidebar-item:hover{
+background-color: var(--button-background-color);
+cursor: pointer;
+}
+.sidebar{
+  position: fixed;
+  width: 17%;
+}
+
+.balance-comp-income{
+  color: var(--primary-color);
+}
+.balance-comp-expense{
+  color: var(--accent-color-second);
+}
+.balance-comp-balance{
+  color: var(--secondary-color);
+}
+
+/*BUTTON*/
+.btn-bg{
+  background-color: #6161ff;
+  color: var(--text-color-button);
+}
+.btn-bg:hover{
+  background-color: #6161ff;
+  color: var(--text-color-button);
+
+}
+.btn-outline-bg{
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+.btn-outline-bg:hover{
+  color: var(--primary-color);
+  background-color: var(--button-background-color);
+}
+
+/*ON ACTIVE CATEGORY*/
+.active-category{
+  background-color: #6161ff;
+  color: #ffffff;
+}
+/*ON ACTIVE TRANSACTION*/
+.active-transaction{
+  background-color: #6161ff;
+  color: #ffffff;
+}
+
+/*NAVBAR*/
+.navbar{
+  height: 80px;
+  background-color: var(--primary-color);
+}
+.navbar-brand{
+ color: var(--background-color);
+}
+.navbar-brand:hover{
+  color: var(--background-color);
+ }
+.pushdown {
+  padding-top: 80px;
+}
+
+/*CREATE FORM*/
+.form-bg{
+  background-color: var(--secondary-background-color) ;
+  border-radius: 6px;
+}
