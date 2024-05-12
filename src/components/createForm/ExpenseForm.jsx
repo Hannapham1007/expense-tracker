@@ -67,8 +67,9 @@ function ExpenseForm({setActiveComponent}) {
           category: expenseCategories.length > 0 ? expenseCategories[0].id : "",
           date: new Date().toISOString().split("T")[0]
         });
-        setActiveComponent("dashboard");
         navigate('/dashboard');
+        setActiveComponent("dashboard");
+
       }
     } catch (error) {
       //console.log("Error", error);

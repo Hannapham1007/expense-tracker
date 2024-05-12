@@ -18,7 +18,6 @@ function IncomeForm({setActiveComponent}) {
   });
   const navigate = useNavigate();
 
-
   const handleChange = (event) => {
     const { name, value } = event.target;
     if (name === "category") {
@@ -70,8 +69,8 @@ function IncomeForm({setActiveComponent}) {
           category: incomeCategories.length > 0 ? incomeCategories[0].id : "",
           date:new Date().toISOString().split("T")[0]
         });
-        setActiveComponent("dashboard");
         navigate('/dashboard');
+        setActiveComponent("dashboard");
         
       }
     } catch (error) {
@@ -79,8 +78,9 @@ function IncomeForm({setActiveComponent}) {
     }
   };
   const handleCancel =() =>{
-    setActiveComponent("dashboard");
+    //setActiveComponent("dashboard");
     navigate('/dashboard');
+
   }
 
   return (
