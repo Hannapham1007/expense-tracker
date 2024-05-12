@@ -2,12 +2,15 @@ import { useState } from "react";
 import ExpenseForm from "./ExpenseForm";
 import IncomeForm from "./IncomeForm";
 import { useNavigate } from "react-router-dom";
+import Header from "../header/Header";
 
 function Transaction({setActiveComponent}) {
   const [isExpense, setIsExpense] = useState(true);
   const [activeItem, setActiveItem] = useState("expense");
   const navigate = useNavigate();
   return (
+    <>
+    <Header/>
     <div className="container d-flex justify-content-center pushdown">
       <div className="col-md-10 col-12 mt-4">
         <div className="d-flex mx-4 my-4 justify-content-center">
@@ -41,6 +44,7 @@ function Transaction({setActiveComponent}) {
 
       </div>
     </div>
+    </>
   );
 }
 

@@ -76,7 +76,7 @@ function ExpenseForm({setActiveComponent}) {
   };
 
   const handleCancel =() =>{
-    setActiveComponent("dashboard");
+    //setActiveComponent("dashboard");
     navigate('/dashboard');
   }
 
