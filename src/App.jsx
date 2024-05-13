@@ -1,17 +1,16 @@
 import './App.css';
-import { Routes, Route, Navigate, useLocation} from 'react-router-dom';
+import { Routes, Route, Navigate} from 'react-router-dom';
 import DashBoard from './components/dashboard/DashBoard';
 import { createContext, useState, useEffect } from 'react';
 import CategoryList from './components/category/CategoryList';
 import CategoryForm from './components/createForm/CategoryForm';
-import Header from './components/header/Header';
 import EditExpenseItem from './components/expense/EditExpenseItem';
 import EditIncomeItem from './components/income/EditIncomeItem';
 import WelcomePage from './components/welcome/WelcomePage';
 import EditPrrofile from './components/profile/EditPrrofile';
 import PageNotFound from './components/pagenotfound/PageNotFound';
 import Transaction from './components/createForm/Transaction';
-import SideBar from './components/sidebar/SideBar';
+import Loading from './components/loading/Loading';
 
 const CategoryContext = createContext();
 const ExpenseContext = createContext();
@@ -29,6 +28,7 @@ function App() {
   const [users, setUsers] = useState([]);
   const [loggedInUser, setLoggedInUser] = useState(null); 
   const [token, setToken] = useState(null); 
+  const [loading, setLoading] = useState(true);
 
 
   useEffect(() => {
@@ -39,7 +39,21 @@ function App() {
       setLoggedInUser(storedUser);
       setToken(storedToken);
     }
+    setLoading(false);
   }, []);
+
+  const fetchData = () => {
+    setLoading(true); 
+    Promise.all([
+      fetchCategory(),
+      fetchExpense(),
+      fetchIncome(),
+      fetchIncomeCategory(),
+      fetchExpenseCategory(),
+      fetchUser()
+    ]).then(() => setLoading(false)); 
+  };
+  
 
   const fetchCategory = () =>{
     fetch(`${API_URL}/categories/user/${loggedInUser.id}`, {
@@ -106,12 +120,7 @@ function App() {
   }
   useEffect(() => {
     if (loggedInUser && token) {
-      fetchCategory();
-      fetchExpense();
-      fetchIncome();
-      fetchIncomeCategory();
-      fetchExpenseCategory();
-      fetchUser();
+      fetchData();
     }
   }, [loggedInUser, token]);
 
@@ -122,8 +131,8 @@ function App() {
         <ExpenseContext.Provider value={{expenses: expenses, setExpenses: setExpenses}}>
           <IncomeContext.Provider value={{incomes: incomes, setIncomes: setIncomes}}>
             <Routes>
-              <Route path='/' element={<WelcomePage></WelcomePage>} />
-              <Route path='/dashboard' element={<DashBoard />} />
+              <Route path='/' element={loading ? <Loading/> : <WelcomePage/>} />
+              <Route path='/dashboard' element={loading ? <Loading/> : <DashBoard />} />
               <Route path='/categories' element={<CategoryList />} />
               <Route path='/transaction' element={<Transaction/>}></Route>
               <Route path='/create_category' element={<CategoryForm />} />
