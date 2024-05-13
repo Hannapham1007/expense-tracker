@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Loading from "../loading/Loading";
 
-function LoginForm({setLoading}) {
+function LoginForm() {
   const API_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const [login, setLogin] = useState({
@@ -13,7 +12,6 @@ function LoginForm({setLoading}) {
   const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
   const token = localStorage.getItem("token");
 
-
   const handleChange = (event) => {
     const { name, value } = event.target;
     setLogin((data) => ({ ...data, [name]: value }));
@@ -21,7 +19,6 @@ function LoginForm({setLoading}) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setLoading(true);
     try {
       const res = await fetch(`${API_URL}/auth/signin`, {
         method: "POST",
@@ -45,9 +42,6 @@ function LoginForm({setLoading}) {
       }
     } catch (error) {
       //console.error('Error: ', error);
-    }
-    finally {
-      setLoading(false); 
     }
   };
 

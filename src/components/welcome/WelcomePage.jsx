@@ -2,15 +2,11 @@ import React, { useState } from "react";
 import LoginForm from "../authentication/LoginForm";
 import SignUpForm from "../authentication/SignUpForm";
 import expenseImg from "../../assets/expense.png";
-import Loading from "../loading/Loading";
 
 function WelcomePage() {
   const [isLogIn, setIsLogIn] = useState(true);
-  const [loading, setLoading] = useState(false);
   return (
-
     <section className="vh-100 welcome-container">
-      {loading && <Loading />} 
       <div className="row vh-100 align-items-center justify-content-center">
         <div className="col-md-6 d-none d-md-block">
           <img
@@ -27,7 +23,7 @@ function WelcomePage() {
             <h2 className="fw-bold text-uppercase text-center">My Expense</h2>
             {isLogIn ? (
               <div>
-                <LoginForm setLoading={setLoading} />
+                <LoginForm />
 
                 <p className="text-center">
                   Don't have an account?
@@ -42,7 +38,7 @@ function WelcomePage() {
               </div>
             ) : (
               <div>
-                <SignUpForm setIsLogIn={setIsLogIn} setLoading={setLoading} />
+                <SignUpForm setIsLogIn={setIsLogIn} />
                 <p className="text-center">
                   Already have an account?
                   <span
