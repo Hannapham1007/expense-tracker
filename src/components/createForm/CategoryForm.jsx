@@ -66,10 +66,11 @@ function CategoryForm() {
         <h2 className="text-uppercase fw-bold text-center">Add Category</h2>
         <form onSubmit={handleSubmit} className="w-75  form-bg py-4 px-4">
           <div className="mb-3">
-            <label htmlFor="categotyType" className="form-label">
+            <label htmlFor="category-type" className="form-label">
               Category type
             </label>
             <select
+            id="category-type"
               className="form-select mb-3"
               name="type"
               value={categoryInput.type}
@@ -80,10 +81,11 @@ function CategoryForm() {
             </select>
           </div>
           <div className="mb-3">
-            <label htmlFor="categoryName" className="form-label">
+            <label htmlFor="category-name" className="form-label">
               Category name
             </label>
             <input
+            id="category-name"
               type="text"
               className="form-control"
               placeholder="Enter category name"
@@ -91,6 +93,7 @@ function CategoryForm() {
               value={categoryInput.name}
               onChange={handleChange}
               required
+              autoComplete="off"
             ></input>
             <div className="d-flex justify-content-center pt-4">
               <button className="btn btn-outline-bg mx-2" onClick={()=> navigate('/dashboard')}>Cancel</button>

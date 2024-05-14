@@ -78,6 +78,7 @@ function CategoryItem({ category }) {
           {isEditing ? (
             <>
               <input
+              id="category-name"
                 type="text"
                 value={editedName}
                 onChange={(e) => setEditedName(e.target.value)}

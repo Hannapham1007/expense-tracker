@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function LoginForm() {
+function LoginForm({ setLoading }) {
   const API_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const [login, setLogin] = useState({
@@ -19,6 +19,7 @@ function LoginForm() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true);
     try {
       const res = await fetch(`${API_URL}/auth/signin`, {
         method: "POST",
@@ -42,6 +43,8 @@ function LoginForm() {
       }
     } catch (error) {
       //console.error('Error: ', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -67,21 +70,29 @@ function LoginForm() {
       <div className="d-flex justify-content-center align-items-center px-4 py-4">
         <form onSubmit={handleSubmit} className="col-md-7 col-10">
           <div className="mb-3">
-            <label className="form-label mb-0 fw-bold">Username</label>
+            <label className="form-label mb-0 fw-bold" htmlFor="username">
+              Username
+            </label>
             <input
+              id="username"
               className="form-control mb-3"
               type="text"
               name="username"
               placeholder="Enter username"
+              autoComplete="off"
               value={login.username}
               onChange={handleChange}
             ></input>
-            <label className="form-label mb-0 fw-bold ">Password</label>
+            <label className="form-label mb-0 fw-bold " htmlFor="password">
+              Password
+            </label>
             <input
+              id="password"
               className="form-control mb-3"
               type="password"
               name="password"
               placeholder="Enter password"
+              autoComplete="off"
               value={login.password}
               onChange={handleChange}
             ></input>

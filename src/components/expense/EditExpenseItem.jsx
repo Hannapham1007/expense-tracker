@@ -14,7 +14,7 @@ function EditExpenseItem() {
   const [expenseInput, setExpenseInput] = useState({
     amount: "",
     description: "",
-    user: loggedInUser.id,
+    user: "",
     category: "",
     date: "",
   });
@@ -80,73 +80,85 @@ function EditExpenseItem() {
   };
   return (
     <>
-    <Header/>
-    <div className="container d-flex justify-content-center pushdown mt-4 ">
-      <div className="col-md-10 col-12">
-        <i
-          className="bi bi-arrow-left-circle mx-2"
-          style={{
-            color: "var(--primary-color)",
-            fontSize: "25px",
-            cursor: "pointer",
-          }}
-          onClick={() => navigate("/dashboard")}
-        />
-        <h2 className="text-center fw-bold text-uppercase"> Edit Expense</h2>
-        <form className="px-4 py-4 form-bg" onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="form-label mb-0">Date</label>
-            <input
-              type="date"
-              className="form-control mb-3"
-              name="date"
-              value={expenseInput.date}
-              onChange={handleChange}
-              required
-            />
-            <label className="form-label mb-0">Category</label>
-            <select
-              className="form-select mb-3"
-              name="category"
-              onChange={handleChange}
-              value={expenseInput.category}
-            >
-              {expenseCategories.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
+      <Header />
+      <div className="container d-flex justify-content-center pushdown mt-4 ">
+        <div className="col-md-10 col-12">
+          <i
+            className="bi bi-arrow-left-circle mx-2"
+            style={{
+              color: "var(--primary-color)",
+              fontSize: "25px",
+              cursor: "pointer",
+            }}
+            onClick={() => navigate("/dashboard")}
+          />
+          <h2 className="text-center fw-bold text-uppercase"> Edit Expense</h2>
+          <form className="px-4 py-4 form-bg" onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label className="form-label mb-0" htmlFor="date">
+                Date
+              </label>
+              <input
+                id="date"
+                type="date"
+                className="form-control mb-3"
+                name="date"
+                value={expenseInput.date}
+                onChange={handleChange}
+                required
+              />
+              <label className="form-label mb-0" htmlFor="category-name">
+                Category
+              </label>
+              <select
+                id="category-name"
+                className="form-select mb-3"
+                name="category"
+                onChange={handleChange}
+                value={expenseInput.category}
+              >
+                {expenseCategories.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
 
-            <label className="form-label mb-0">Amount</label>
-            <input
-              type="number"
-              className="form-control mb-3"
-              placeholder="$XX.XX"
-              name="amount"
-              value={expenseInput.amount}
-              onChange={handleChange}
-              required
-            />
+              <label className="form-label mb-0" htmlFor="amount">
+                Amount
+              </label>
+              <input
+                id="amount"
+                type="number"
+                className="form-control mb-3"
+                placeholder="XX.XX kr"
+                name="amount"
+                value={expenseInput.amount}
+                onChange={handleChange}
+                required
+              />
 
-            <label className="form-label mb-0">Description</label>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Description"
-              name="description"
-              value={expenseInput.description}
-              onChange={handleChange}
-            ></input>
-            <div className="d-flex justify-content-center pt-4">
-              <button type="submit" className="btn btn-bg">
-                Update Expense
-              </button>
+              <label className="form-label mb-0" htmlFor="description">
+                Description
+              </label>
+              <input
+                id="description"
+                type="text"
+                className="form-control"
+                placeholder="Description"
+                name="description"
+                value={expenseInput.description}
+                onChange={handleChange}
+              ></input>
+              <div className="d-flex justify-content-center pt-4">
+                <button type="submit" className="btn btn-bg">
+                  Update Expense
+                </button>
+              </div>
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
-    </div>
     </>
   );
 }

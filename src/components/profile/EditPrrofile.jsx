@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../../App";
+import Header from "../header/Header";
 
 function EditPrrofile() {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -64,43 +65,56 @@ function EditPrrofile() {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center px-4 py-4" style={{marginTop:'80px'}}>
-      <form onSubmit={handleSubmit} className="col-md-7 col-10">
-        <div className="mb-3">
-          <label className="form-label mb-0 fw-bold">Username</label>
-          <input
-            className="form-control mb-3"
-            type="text"
-            name="username"
-            placeholder="Enter username"
-            value={userData.username}
-            onChange={handleChange}
-          ></input>
-          <label className="form-label mb-0 fw-bold">Email</label>
-          <input
-            className="form-control mb-3"
-            type="email"
-            name="email"
-            placeholder="Email@gmail.com"
-            value={userData.email}
-            onChange={handleChange}
-          ></input>
-          <div className="d-flex justify-content-center">
-            <button
-            
-              type="submit"
-              className="btn btn-outline-bg mx-2"
-              onClick={handleOnCancel}
-            >
-              Cancel
-            </button>
-            <button type="submit" className="btn btn-bg mx-2">
-              Save
-            </button>
+    <>
+      <Header />
+      <div
+        className="d-flex justify-content-center align-items-center px-4 py-4"
+        style={{ marginTop: "80px" }}
+      >
+        <form onSubmit={handleSubmit} className="col-md-7 col-10">
+          <div className="mb-3">
+            <label className="form-label mb-0 fw-bold" htmlFor="username">
+              Username
+            </label>
+            <input
+              id="username"
+              className="form-control mb-3"
+              type="text"
+              name="username"
+              placeholder="Enter username"
+              value={userData.username}
+              onChange={handleChange}
+              autoComplete="off"
+            ></input>
+            <label className="form-label mb-0 fw-bold" htmlFor="email">
+              Email
+            </label>
+            <input
+              id="email"
+              className="form-control mb-3"
+              type="email"
+              name="email"
+              placeholder="Email@gmail.com"
+              value={userData.email}
+              onChange={handleChange}
+              autoComplete="off"
+            ></input>
+            <div className="d-flex justify-content-center">
+              <button
+                type="submit"
+                className="btn btn-outline-bg mx-2"
+                onClick={handleOnCancel}
+              >
+                Cancel
+              </button>
+              <button type="submit" className="btn btn-bg mx-2">
+                Save
+              </button>
+            </div>
           </div>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
+    </>
   );
 }
 
