@@ -8,7 +8,7 @@ function LoginForm({ setLoading }) {
     username: "",
     password: "",
   });
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("");
   const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
   const token = localStorage.getItem("token");
 
@@ -21,18 +21,13 @@ function LoginForm({ setLoading }) {
     event.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/auth/signin`, {
+        const res = await fetch(`${API_URL}/auth/signin`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(login),
       });
       if (!res.ok) {
-        //console.error("Failed to login");
-        setError("Username or password is incorrect");
-        setLogin({
-          username: "",
-          password: "",
-        });
+        setError("Incorrect username or password");
       } else {
         //console.log("Login successful");
         const data = await res.json();
@@ -82,6 +77,7 @@ function LoginForm({ setLoading }) {
               autoComplete="off"
               value={login.username}
               onChange={handleChange}
+              required
             ></input>
             <label className="form-label mb-0 fw-bold " htmlFor="password">
               Password
@@ -95,12 +91,18 @@ function LoginForm({ setLoading }) {
               autoComplete="off"
               value={login.password}
               onChange={handleChange}
+              required
             ></input>
             {error && <p className="text-danger mb-3">{error}</p>}
             <div className="d-flex justify-content-center">
               <button className="btn btn-bg" type="submit">
                 Sign In
               </button>
+            </div>
+            <div className="mt-2">
+              <p className="my-0 small fw-bold">Testing credientials</p>
+              <p className="my-0 small fw-light">Username: react</p>
+              <p className="my-0 small fw-light"> Password: Helloworld123</p>
             </div>
           </div>
         </form>
