@@ -11,7 +11,7 @@ function ExpenseForm({ setActiveComponent }) {
   const [expenseInput, setExpenseInput] = useState({
     amount: "",
     description: "",
-    user: "",
+    user: loggedInUser.id,
     category: expenseCategories.length > 0 ? expenseCategories[0].id : "",
     date: new Date().toISOString().split("T")[0],
   });

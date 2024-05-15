@@ -11,7 +11,7 @@ function IncomeForm({ setActiveComponent }) {
   const [incomeInput, setIncomeInput] = useState({
     amount: "",
     description: "",
-    user: "",
+    user: loggedInUser.id,
     category: incomeCategories.length > 0 ? incomeCategories[0].id : "",
     date: new Date().toISOString().split("T")[0],
   });
