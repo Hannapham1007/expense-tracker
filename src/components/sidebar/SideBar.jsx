@@ -4,7 +4,7 @@ import { UserContext } from "../../App";
 
 const sidebarItems = [
   { id: "dashboard", icon: "bi-speedometer2", text: "Dashboard" },
- // { id: "transaction", icon: "bi-arrow-left-right", text: "Transactions" },
+  { id: "transactionList", icon: "bi-arrow-left-right", text: "Transactions" },
   { id: "category", icon: "bi-columns-gap", text: "Categories" },
   { id: "account", icon: "bi-person", text: "Account" },
 ];

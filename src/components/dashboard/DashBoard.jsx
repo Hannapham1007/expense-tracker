@@ -5,6 +5,7 @@ import CategoryList from "../category/CategoryList";
 import Transaction from "../createForm/Transaction";
 import Profile from "../profile/Profile";
 import Header from "../header/Header";
+import TransactionList from "../transaction/TransactionList";
 
 function DashBoard() {
   const [activeComponent, setActiveComponent] = useState("dashboard");
@@ -23,6 +24,8 @@ function DashBoard() {
         return <CategoryList></CategoryList>;
       case "account":
         return <Profile></Profile>;
+      case "transactionList":
+        return <TransactionList></TransactionList>
       default:
         return null;
     }
