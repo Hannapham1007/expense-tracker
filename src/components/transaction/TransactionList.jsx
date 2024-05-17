@@ -68,10 +68,14 @@ function TransactionList() {
 
   return (
     <div className="pushdown container">
+      <div className="my-4">
+        <h2 className="text-center text-uppercase fw-bold">My Transactions</h2>
       <SearchBar
         filterText={filterText}
         setFilterText={setFilterText}
       ></SearchBar>
+      </div>
+   
       <DateRangeFilter
         startDate={startDate}
         setStartDate={setStartDate}

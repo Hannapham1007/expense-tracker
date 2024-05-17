@@ -20,10 +20,15 @@ function DateRangeFilter({
       <div className="row justify-content-between ">
         <div className="col-md-5 col-12 mb-2 ">
           <div className="form-bg px-4 py-2">
-            <label className="form-label fw-bold" style={{ color: "grey" }}>
+            <label
+              className="form-label fw-bold"
+              style={{ color: "grey" }}
+              htmlFor="start-date"
+            >
               Start Date
             </label>
             <input
+              id="start-date"
               type="date"
               className="form-control"
               value={startDate}
@@ -33,10 +38,15 @@ function DateRangeFilter({
         </div>
         <div className="col-md-5 col-12 mb-2">
           <div className="form-bg px-4 py-2">
-            <label className="form-label fw-bold" style={{ color: "grey" }}>
+            <label
+              className="form-label fw-bold"
+              style={{ color: "grey" }}
+              htmlFor="end-date"
+            >
               End Date
             </label>
             <input
+              id="end-date"
               type="date"
               className="form-control"
               value={endDate}
@@ -44,12 +54,19 @@ function DateRangeFilter({
             />
           </div>
         </div>
-     
-      <div className="d-flex col-md-2 col-12 align-items-center justify-content-center">
-        <button className="btn btn-bg" onClick={handleResetFilter}>
-          Reset Filter
-        </button>
-      </div>
+
+        <div className="d-flex col-md-2 col-12 align-items-center justify-content-center">
+          <button
+            className="btn btn-outline-bg mx-2"
+            onClick={handleResetFilter}
+          >
+            <i
+              className="bi bi-filter"
+              style={{ color: "var(--primary-color)" }}
+            />
+            Reset Filter
+          </button>
+        </div>
       </div>
     </div>
   );

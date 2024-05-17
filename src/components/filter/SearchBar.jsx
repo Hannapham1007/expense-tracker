@@ -3,7 +3,7 @@ import { FaSearch } from 'react-icons/fa';
 
 function SearchBar({filterText, setFilterText}) {
   return (
-    <div className='mb-2 mt-4' style={{ position: 'relative' }}>
+    <div style={{ position: 'relative' }}>
       <input
       id='search'
         type="text"

@@ -136,6 +136,7 @@ function ExpenseForm({ setActiveComponent }) {
             name="description"
             value={expenseInput.description}
             onChange={handleChange}
+            
           ></input>
           <div className="d-flex justify-content-center pt-4">
             <button className="btn btn-outline-bg mx-2" onClick={handleCancel}>
