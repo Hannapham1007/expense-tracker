@@ -11,7 +11,7 @@ function Transaction({setActiveComponent}) {
   return (
     <>
     <Header/>
-    <div className="container d-flex justify-content-center pushdown">
+    <div className="d-flex justify-content-center pushdown mx-2">
       <div className="col-md-10 col-12 mt-4">
         <div className="d-flex mx-4 my-4 justify-content-center">
           <button

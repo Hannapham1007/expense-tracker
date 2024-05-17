@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import IncomeList from "../income/IncomeList";
 import ExpenseList from "../expense/ExpenseList";
 import { ExpenseContext, IncomeContext } from "../../App";
@@ -67,7 +67,7 @@ function TransactionList() {
   const filteredExpense = filteredList(expenses);
 
   return (
-    <div className="pushdown container">
+    <div className="pushdown mx-4 container">
       <div className="my-4">
         <h2 className="text-center text-uppercase fw-bold">My Transactions</h2>
       <SearchBar

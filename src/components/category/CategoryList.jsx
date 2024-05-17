@@ -26,7 +26,7 @@ function CategoryList() {
   return (
     <>
     <Header/>
-    <div className="container d-flex justify-content-center pushdown">
+    <div className="d-flex justify-content-center pushdown mx-4">
       <div className="mt-4 col-md-10 col-12">
         <h2 className="text-center fw-bold text-uppercase"> My Categories</h2>
         <div className="d-flex justify-content-center my-4 mx-4">

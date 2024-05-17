@@ -16,8 +16,8 @@ function DateRangeFilter({
   };
 
   return (
-    <div className="">
-      <div className="row justify-content-between ">
+    <div >
+      <div className="row">
         <div className="col-md-5 col-12 mb-2 ">
           <div className="form-bg px-4 py-2">
             <label
@@ -57,7 +57,7 @@ function DateRangeFilter({
 
         <div className="d-flex col-md-2 col-12 align-items-center justify-content-center">
           <button
-            className="btn btn-outline-bg mx-2"
+            className="btn btn-outline-bg"
             onClick={handleResetFilter}
           >
             <i
