@@ -3,13 +3,13 @@ import { FaSearch } from "react-icons/fa";
 
 function SearchBar({ filterText, setFilterText }) {
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: "relative"}} >
       <input
         id="search"
         type="text"
         value={filterText}
         onChange={(e) => setFilterText(e.target.value)}
-        placeholder="Search for category or keyword"
+        placeholder="Search for a category or keyword"
         style={{
           width: "100%",
           padding: "8px 10px 8px 40px",

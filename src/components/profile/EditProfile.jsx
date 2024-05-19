@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../../App";
-import Header from "../header/Header";
 
-function EditPrrofile() {
+function EditProfile() {
   const API_URL = import.meta.env.VITE_API_URL;
   const { id } = useParams();
   const { users, setUsers } = useContext(UserContext);
@@ -66,10 +65,8 @@ function EditPrrofile() {
 
   return (
     <>
-      <Header />
       <div
-        className="d-flex justify-content-center align-items-center px-4 py-4"
-        style={{ marginTop: "80px" }}
+        className="d-flex justify-content-center align-items-center px-4"
       >
         <form onSubmit={handleSubmit} className="col-md-7 col-10">
           <div className="mb-3">
@@ -118,4 +115,4 @@ function EditPrrofile() {
   );
 }
 
-export default EditPrrofile;
+export default EditProfile;

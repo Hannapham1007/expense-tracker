@@ -17,7 +17,7 @@ function DateRangeFilter({
 
   return (
     <div >
-      <div className="row">
+      <div className="row mx-0" >
         <div className="col-md-5 col-12 mb-2 ">
           <div className="form-bg px-4 py-2">
             <label

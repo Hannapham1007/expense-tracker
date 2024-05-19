@@ -63,10 +63,6 @@ ul {
 background-color: var(--button-background-color);
 cursor: pointer;
 }
-.sidebar{
-  position: fixed;
-  width: 17%;
-}
 
 .balance-comp-income{
   color: var(--primary-color);
@@ -119,12 +115,50 @@ cursor: pointer;
 .navbar-brand:hover{
   color: var(--background-color);
  }
-.pushdown {
-  padding-top: 80px;
-}
 
 /*CREATE FORM*/
 .form-bg{
   background-color: var(--secondary-background-color) ;
   border-radius: 6px;
 }
+
+/* DESKTOP */
+
+.sidebar {
+  position: fixed;
+  width: 200px;
+  height: 100vh;
+}
+
+.content-container {
+  margin-left: 200px;
+  width: calc(100% - 200px);
+  padding: 20px;
+}
+
+/* TABLET */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 150px;
+  }
+
+  .content-container {
+    margin-left: 150px;
+    width: calc(100% - 150px);
+  }
+}
+
+/* MOBILE */
+@media (max-width: 576px) {
+  .sidebar {
+    width: 80px; 
+  }
+
+  .content-container {
+    margin-left: 80px;
+    width: calc(100% - 80px);
+  }
+}
+
+
+

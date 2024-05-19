@@ -79,18 +79,8 @@ function EditIncomeItem() {
   };
   return (
     <>
-      <Header />
-      <div className="container d-flex justify-content-center pushdown mt-4 ">
+      <div className="d-flex justify-content-center">
         <div className="col-md-10 col-12">
-          <i
-            className="bi bi-arrow-left-circle mx-2"
-            style={{
-              color: "var(--primary-color)",
-              fontSize: "25px",
-              cursor: "pointer",
-            }}
-            onClick={() => navigate("/dashboard")}
-          />
           <h2 className="text-center fw-bold text-uppercase"> Edit Income</h2>
           <form className="px-4 py-4 form-bg" onSubmit={handleSubmit}>
             <div className="mb-3">

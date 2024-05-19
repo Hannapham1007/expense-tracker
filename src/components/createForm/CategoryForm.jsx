@@ -57,8 +57,7 @@ function CategoryForm() {
 
   return (
     <>
-    <Header/>
-    <div className="d-flex justify-content-center mt-4">
+    <div className="d-flex justify-content-center">
       <div
         className="pt-4 col-md-7 col-10 d-flex flex-column align-items-center"
         style={{ marginTop: "80px" }}

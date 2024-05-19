@@ -6,12 +6,12 @@ function Profile() {
   const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
   const navigate = useNavigate();
   const handleEdit = () =>{
-    navigate(`/edit_profile/${loggedInUser.id}`)
+    navigate(`/edit_account/${loggedInUser.id}`)
 
   }
   return (
-    <div className="align-items-center justify-content-center mx-2 pushdown">
-      <h2 className="text-center fw-bold mt-4">My Expense Account</h2>
+    <div className="align-items-center justify-content-center mx-2">
+      <h2 className="text-center fw-bold">My Expense Account</h2>
       <div className="mt-4 col-md-8 container form-bg px-4 py-4" >
         <div className="row mx-0">
           <p className="col px-0">Username: {loggedInUser.username} </p>

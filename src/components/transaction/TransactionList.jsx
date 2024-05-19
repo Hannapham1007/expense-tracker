@@ -38,7 +38,7 @@ function TransactionList() {
     const day = date.getDate().toString().padStart(2, "0");
     return `${year}-${month}-${day}`;
   }
-  
+
   const handleResetFilter = () => {
     defaultCurrentMonth();
   };
@@ -58,8 +58,12 @@ function TransactionList() {
       start.setHours(0, 0, 0, 0);
       end.setHours(0, 0, 0, 0);
 
-      return (isMatchedCategory || isMatchedDescription) &&
-             (!startDate || !endDate || (transactionDate >= start && transactionDate <= end));
+      return (
+        (isMatchedCategory || isMatchedDescription) &&
+        (!startDate ||
+          !endDate ||
+          (transactionDate >= start && transactionDate <= end))
+      );
     });
   };
 
@@ -67,15 +71,16 @@ function TransactionList() {
   const filteredExpense = filteredList(expenses);
 
   return (
-    <div className="pushdown mx-4 container">
-      <div className="my-4">
+    <div className="">
         <h2 className="text-center text-uppercase fw-bold">My Transactions</h2>
-      <SearchBar
-        filterText={filterText}
-        setFilterText={setFilterText}
-      ></SearchBar>
+        <div className="mb-3 mx-3">
+
+        <SearchBar
+          filterText={filterText}
+          setFilterText={setFilterText}
+        ></SearchBar>
       </div>
-   
+
       <DateRangeFilter
         startDate={startDate}
         setStartDate={setStartDate}
