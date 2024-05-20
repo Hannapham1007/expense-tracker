@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function LoginForm({ setLoading }) {
@@ -8,7 +8,7 @@ function LoginForm({ setLoading }) {
     username: "",
     password: "",
   });
-  const [error, setError] = useState("");
+  const [error, setError] = useState(false);
   const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
   const token = localStorage.getItem("token");
 
@@ -19,7 +19,7 @@ function LoginForm({ setLoading }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setLoading(true);
+    setLoading();
     try {
         const res = await fetch(`${API_URL}/auth/signin`, {
         method: "POST",
@@ -27,7 +27,7 @@ function LoginForm({ setLoading }) {
         body: JSON.stringify(login),
       });
       if (!res.ok) {
-        setError("Incorrect username or password");
+        setError(true);
       } else {
         //console.log("Login successful");
         const data = await res.json();
@@ -59,7 +59,6 @@ function LoginForm({ setLoading }) {
         //console.error('Error fetching user data:', error);
       });
   };
-
   return (
     <>
       <div className="d-flex justify-content-center align-items-center px-4 py-4">
@@ -93,7 +92,7 @@ function LoginForm({ setLoading }) {
               onChange={handleChange}
               required
             ></input>
-            {error && <p className="text-danger mb-3">{error}</p>}
+            {error ? ( <p className="text-danger mb-3">Username or password is incorrect</p>): ""}
             <div className="d-flex justify-content-center">
               <button className="btn btn-bg" type="submit">
                 Sign In

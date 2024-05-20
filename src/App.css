@@ -126,37 +126,37 @@ cursor: pointer;
 
 .sidebar {
   position: fixed;
-  width: 200px;
+  width: 20%;
   height: 100vh;
 }
 
 .content-container {
-  margin-left: 200px;
-  width: calc(100% - 200px);
+  margin-left: 20%;
+  width: calc(100% - 20%);
   padding: 20px;
 }
 
 /* TABLET */
 @media (max-width: 768px) {
   .sidebar {
-    width: 150px;
+    width: 15%;
   }
 
   .content-container {
-    margin-left: 150px;
-    width: calc(100% - 150px);
+    margin-left: 15%;
+    width: calc(100% - 15%);
   }
 }
 
 /* MOBILE */
 @media (max-width: 576px) {
   .sidebar {
-    width: 80px; 
+    width: 15%; 
   }
 
   .content-container {
-    margin-left: 80px;
-    width: calc(100% - 80px);
+    margin-left: 15%;
+    width: calc(100% - 15%);
   }
 }
 
