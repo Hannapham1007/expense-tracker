@@ -15,6 +15,11 @@ import SideBar from "./components/sidebar/SideBar";
 import TransactionList from "./components/transaction/TransactionList";
 import Profile from "./components/profile/Profile";
 import EditProfile from "./components/profile/EditProfile";
+import Auth from "./components/authentication/Auth";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { Provider } from "react-redux";
+import { expenseSlice } from "./reducers/expense";
+import { categorySlice } from "./reducers/category";
 
 const CategoryContext = createContext();
 const ExpenseContext = createContext();
@@ -140,11 +145,19 @@ function App() {
       });
   };
 
+  const reducer = combineReducers({
+    expense: expenseSlice.reducer,
+    category: categorySlice.reducer
+  })
+
+  const store = configureStore({reducer})
+
   if (loading) {
     return <Loading />;
   }
 
   return (
+    <Provider store={store}>
     <UserContext.Provider
       value={{
         users,
@@ -167,8 +180,6 @@ function App() {
       >
         <ExpenseContext.Provider value={{ expenses, setExpenses }}>
           <IncomeContext.Provider value={{ incomes, setIncomes }}>
-            {loggedInUser ? (
-              <>
                 <header>
                   <Header />
                 </header>
@@ -206,22 +217,17 @@ function App() {
                         path="/edit_income/:id"
                         element={<EditIncomeItem />}
                       />
+                      <Route path="/auth" element={<Auth/>}></Route>
                       <Route path="/404" element={<PageNotFound />} />
                       <Route path="*" element={<Navigate to="/404" />} />
                     </Routes>
                   </section>
                 </main>
-              </>
-            ) : (
-              <Routes>
-                <Route path="/" element={<WelcomePage />} />
-                <Route path="*" element={<Navigate to="/" />} />
-              </Routes>
-            )}
           </IncomeContext.Provider>
         </ExpenseContext.Provider>
       </CategoryContext.Provider>
     </UserContext.Provider>
+    </Provider>
   );
 }
 

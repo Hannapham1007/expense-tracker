@@ -1,9 +1,6 @@
-import { useContext } from "react";
-import { ExpenseContext } from "../../App";
 import ExpenseItem from "./ExpenseItem";
 
 function ExpenseList({filteredList}) {
-  const { expenses } = useContext(ExpenseContext);
   return (
     <div className="px-2 py-4">
       <h4 className="fw-bold balance-comp-expense">Expenses</h4>

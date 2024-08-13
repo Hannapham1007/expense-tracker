@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
-function SignUpForm({setIsLogIn, setLoading}) {
+function SignUpForm({setIsLogIn}) {
   const API_URL = import.meta.env.VITE_API_URL;
     const [userData, setUserData] = useState({username: "", email: "", password: "", role: ['user']});
     const handleChange = (event) =>{
@@ -11,7 +11,6 @@ function SignUpForm({setIsLogIn, setLoading}) {
     const navigate = useNavigate();
     const handleSubmit = async (event) =>{
         event.preventDefault();
-        setLoading(true);
         try {
             const res = await fetch(`${API_URL}/auth/signup`, {
               method: "POST",
@@ -37,9 +36,7 @@ function SignUpForm({setIsLogIn, setLoading}) {
             //console.error('Error:', error);
             alert("Failed to create account. Please try again later.");
           }
-          finally {
-            setLoading(false);
-          }
+         
     }
   return (
     <div className='d-flex justify-content-center align-items-center px-4 py-4'>

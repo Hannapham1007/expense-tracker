@@ -4,6 +4,8 @@ import { MdOutlineModeEdit } from "react-icons/md";
 import { MdOutlineDelete } from "react-icons/md";
 import { ExpenseContext, UserContext } from "../../App";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectCategories } from "../../reducers/category";
 
 function ExpenseItem({ exp }) {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -15,7 +17,14 @@ function ExpenseItem({ exp }) {
   const day = date.getDate();
   const month = date.toLocaleString("default", { month: "short" });
 
-
+  const {loggedInUser} = useContext(UserContext);
+  const isLoggedInUser = Boolean(loggedInUser);
+  const categories = useSelector(selectCategories);
+  const getCategoryName = (categoryId) => {
+  const category = categories.find(cat => String(cat.id) === String(categoryId));
+    return category ? category.name : 'Unknown Category';
+  };
+  console.log(categories)
   const handleDelete = async (event) => {
     event.preventDefault();
     try {
@@ -46,7 +55,10 @@ function ExpenseItem({ exp }) {
       </p>
       <div className="d-flex  justify-content-between">
         <div className="d-flex">
+          {isLoggedInUser? (
           <p>{exp.category.name}</p>
+
+          ) : <p> {getCategoryName(exp.category)} </p>}
         </div>
         <div>
           <p>{exp.amount} kr</p>

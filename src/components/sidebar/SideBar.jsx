@@ -21,29 +21,27 @@ const sidebarItems = [
     text: "Categories",
     route: "/categories",
   },
-  {
-    id: "account",
-    icon: "bi-person",
-    text: "Account",
-    route: "/account",
-  },
 ];
 
 function SideBar() {
-  const { setLoggedInUser, setToken } = useContext(UserContext);
+  const { loggedInUser, setLoggedInUser, setToken } = useContext(UserContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [activeItem, setActiveItem] = useState(location.pathname);
+  const [showSignin, setShowSignin] = useState(false);
 
   useEffect(() => {
     setActiveItem(location.pathname);
-  }, [location]);
+    if (loggedInUser === null) {
+      setShowSignin(true);
+    } else {
+      setShowSignin(false);
+    }
+  }, [location, loggedInUser]);
 
   const handleLogOut = () => {
-    localStorage.removeItem("loggedInUser");
-    localStorage.removeItem("token");
-    setLoggedInUser(null);
-    setToken(null);
+    localStorage.clear()
+    window.location.reload();
     navigate("/");
   };
 
@@ -77,13 +75,32 @@ function SideBar() {
             </p>
           </div>
         ))}
-        <div
-          className="sidebar-item d-flex flex-column align-items-center justify-content-center px-4 py-4"
-          onClick={handleLogOut}
-        >
-          <i className="bi bi-box-arrow-right"></i>
-          <p className="d-none d-md-block">Log Out</p>
-        </div>
+        {showSignin ? (
+          <div
+            className="sidebar-item d-flex flex-column align-items-center justify-content-center px-4 py-4"
+            onClick={() => navigate("/auth")}
+          >
+            <i className="bi bi-box-arrow-right"></i>
+            <p className="d-none d-md-block">Sign in</p>
+          </div>
+        ) : (
+          <div>
+            <div
+              className="sidebar-item d-flex flex-column align-items-center justify-content-center px-4 py-4"
+              onClick={()=> navigate("account")}
+            >
+              <i className="bi-person"></i>
+              <p className="d-none d-md-block">Account</p>
+            </div>
+            <div
+              className="sidebar-item d-flex flex-column align-items-center justify-content-center px-4 py-4"
+              onClick={handleLogOut}
+            >
+              <i className="bi bi-box-arrow-right"></i>
+              <p className="d-none d-md-block">Log out</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

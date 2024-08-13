@@ -1,18 +1,24 @@
 import React, { useContext, useState, useEffect } from "react";
 import ExpenseList from "../expense/ExpenseList";
 import IncomeList from "../income/IncomeList";
-import { ExpenseContext } from "../../App";
+import { ExpenseContext, UserContext } from "../../App";
 import { IncomeContext } from "../../App";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "../filter/SearchBar";
 import ChartBar from "../chart/ChartBar";
+import { useSelector } from "react-redux";
 
 function Balance() {
   const { expenses } = useContext(ExpenseContext);
   const { incomes } = useContext(IncomeContext);
   const [selectedMonth, setSelectedMonth] = useState("");
   const [filterText, setFilterText] = useState("");
+  const reduxExpense = useSelector(state => state.expense.expenses);
+  const {loggedInUser} = useContext(UserContext);
+  const isLoggedIn = Boolean(loggedInUser);
+  console.log(reduxExpense);
   const navigate = useNavigate();
+
 
   useEffect(() => {
     const currentMonth = formatDate(new Date());
@@ -147,10 +153,16 @@ function Balance() {
           <ChartBar data={chartData} />
       </div>
       <div>
+        
         <IncomeList filteredList={filteredIncomes}></IncomeList>
       </div>
       <div>
-        <ExpenseList filteredList={filteredExpenses}></ExpenseList>
+        {
+          isLoggedIn ? ( <ExpenseList filteredList={filteredExpenses}></ExpenseList>) : (
+            <ExpenseList filteredList={reduxExpense}></ExpenseList>
+          )
+        }
+       
       </div>
     </>
   );
