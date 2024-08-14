@@ -2,72 +2,53 @@ import { useContext, useState } from "react";
 import { MdOutlineModeEdit } from "react-icons/md";
 import { MdOutlineDelete } from "react-icons/md";
 import { CategoryContext, UserContext } from "../../App";
+import { useDispatch } from "react-redux";
+import { editCategory, deleteCategory } from "../../reducers/category";
+import {
+  deleteCategoryAPI,
+  updateCategoryAPI,
+} from "../../service/categoryAPI";
 
 function CategoryItem({ category }) {
-  const API_URL = import.meta.env.VITE_API_URL;
   const { loggedInUser, token } = useContext(UserContext);
   const { categories, setCategories } = useContext(CategoryContext);
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(category.name);
+  const dispatch = useDispatch();
 
   const handleEdit = () => {
     setIsEditing(true);
   };
 
-  const handleSave = async () => {
+  const handleSave = () => {
     setIsEditing(false);
-    try {
-      const result = await fetch(`${API_URL}/categories/${category.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          name: editedName,
-          type: category.type,
-          user: loggedInUser.id,
-        }),
-      });
-      if (!result.ok) {
-        //console.log("failed to update");
-      } else {
-        const updatedCategories = categories.map((cat) =>
-          cat.id === category.id ? { ...cat, name: editedName } : cat
-        );
-
-        setCategories(updatedCategories);
-      }
-    } catch (error) {
-      //console.log(error);
+    if (loggedInUser) {
+      updateCategoryAPI(
+        editedName,
+        category.type,
+        loggedInUser.id,
+        category.id,
+        token
+      );
+      const updatedCategories = categories.map((cat) =>
+        cat.id === category.id ? { ...cat, name: editedName } : cat
+      );
+      setCategories(updatedCategories);
+    } else {
+      const updatedCategory = { ...category, name: editedName };
+      dispatch(editCategory(updatedCategory));
     }
   };
 
-  const handleDelete = async (event) => {
-    try {
-      const result = await fetch(`${API_URL}/categories/${category.id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (!result.ok) {
-        //console.log("Failed to delete");
-        alert(
-          "The category is used in your transaction logs and cannot be deleted."
-        );
-      } else {
-        const updatedCategories = categories.filter(
-          (cat) => cat.id !== category.id
-        );
-        setCategories(updatedCategories);
-      }
-    } catch (error) {
-      //console.log("error", error);
-      alert(
-        "The category is used in your transaction logs and cannot be deleted"
+  const handleDelete = (event) => {
+    if (loggedInUser) {
+      deleteCategoryAPI(category.id, token);
+      const updatedCategories = categories.filter(
+        (cat) => cat.id !== category.id
       );
+      setCategories(updatedCategories);
+    } else {
+      dispatch(deleteCategory(category.id));
     }
   };
 
@@ -78,7 +59,7 @@ function CategoryItem({ category }) {
           {isEditing ? (
             <>
               <input
-              id="category-name"
+                id="category-name"
                 type="text"
                 value={editedName}
                 onChange={(e) => setEditedName(e.target.value)}

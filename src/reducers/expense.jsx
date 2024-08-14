@@ -39,7 +39,6 @@ export const expenseSlice = createSlice({
 
 export const { addExpense } = expenseSlice.actions;
 
-// Selector to get expenses from the store
 export const selectExpenses = (state) => state.expense.expenses;
 
 export default expenseSlice.reducer;

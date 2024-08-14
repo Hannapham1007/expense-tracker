@@ -12,19 +12,21 @@ function ExpenseItem({ exp }) {
   const { expenses, setExpenses } = useContext(ExpenseContext);
   const { token } = useContext(UserContext);
   const navigate = useNavigate();
-  const dateString = exp.expenseDate;
+  const dateString = exp.expenseDate || exp.date;
   const date = new Date(dateString);
   const day = date.getDate();
   const month = date.toLocaleString("default", { month: "short" });
 
-  const {loggedInUser} = useContext(UserContext);
+  const { loggedInUser } = useContext(UserContext);
   const isLoggedInUser = Boolean(loggedInUser);
   const categories = useSelector(selectCategories);
   const getCategoryName = (categoryId) => {
-  const category = categories.find(cat => String(cat.id) === String(categoryId));
-    return category ? category.name : 'Unknown Category';
+    const category = categories.find(
+      (cat) => String(cat.id) === String(categoryId)
+    );
+    return category ? category.name : "Unknown Category";
   };
-  console.log(categories)
+
   const handleDelete = async (event) => {
     event.preventDefault();
     try {
@@ -50,15 +52,16 @@ function ExpenseItem({ exp }) {
   };
   return (
     <div>
-      <p>
-        {day} {month}
-      </p>
+          <p>
+            {day} {month}
+          </p>
       <div className="d-flex  justify-content-between">
         <div className="d-flex">
-          {isLoggedInUser? (
-          <p>{exp.category.name}</p>
-
-          ) : <p> {getCategoryName(exp.category)} </p>}
+          {isLoggedInUser ? (
+            <p>{exp.category.name}</p>
+          ) : (
+            <p> {getCategoryName(exp.category)} </p>
+          )}
         </div>
         <div>
           <p>{exp.amount} kr</p>

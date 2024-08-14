@@ -1,27 +1,33 @@
 import { useContext, useState, useEffect } from "react";
-import { CategoryContext } from "../../App";
+import { CategoryContext, UserContext } from "../../App";
 import CategoryItem from "./CategoryItem";
 import { useNavigate } from "react-router-dom";
 import Header from "../header/Header";
+import { useSelector } from "react-redux";
 
 function CategoryList() {
   const { categories } = useContext(CategoryContext);
   const [filteredCategories, setFilteredCategories] = useState(categories);
-  const navigate = useNavigate();
   const [activeItem, setActiveItem] = useState("all");
+  const categoriesSelector = useSelector(state => state.category.categories);
+  const navigate = useNavigate();
+  const {loggedInUser} = useContext(UserContext);
+  const isLoggedIn = Boolean(loggedInUser);
+
+  const categoriesToShow = isLoggedIn ? categories : categoriesSelector;
 
   const handleNavigate = () => {
     navigate("/create_category");
   };
 
   const filterCategoriesByType = (type) => {
-    const filtered = categories.filter((cat) => cat.type === type);
+    const filtered = categoriesToShow.filter((cat) => cat.type === type);
     setFilteredCategories(filtered);
   };
 
   useEffect(() => {
-    setFilteredCategories(categories);
-  }, [categories]);
+    setFilteredCategories(categoriesToShow);
+  }, [categoriesToShow]);
 
   return (
     <>
@@ -34,7 +40,7 @@ function CategoryList() {
               activeItem === "all" ? "active-category" : ""
             }`}
             onClick={() => {
-              setFilteredCategories(categories);
+              setFilteredCategories(categoriesToShow);
               setActiveItem("all");
             }}
           >
