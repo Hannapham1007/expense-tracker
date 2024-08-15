@@ -4,21 +4,19 @@ import { MdOutlineModeEdit } from "react-icons/md";
 import { MdOutlineDelete } from "react-icons/md";
 import { ExpenseContext, UserContext } from "../../App";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectCategories } from "../../reducers/category";
+import { deleteExpense } from "../../reducers/expense";
+import { deleteExpenseAPI } from "../../service/expenseAPI";
 
 function ExpenseItem({ exp }) {
-  const API_URL = import.meta.env.VITE_API_URL;
   const { expenses, setExpenses } = useContext(ExpenseContext);
-  const { token } = useContext(UserContext);
+  const { loggedInUser, token } = useContext(UserContext);
   const navigate = useNavigate();
   const dateString = exp.expenseDate || exp.date;
   const date = new Date(dateString);
   const day = date.getDate();
   const month = date.toLocaleString("default", { month: "short" });
-
-  const { loggedInUser } = useContext(UserContext);
-  const isLoggedInUser = Boolean(loggedInUser);
   const categories = useSelector(selectCategories);
   const getCategoryName = (categoryId) => {
     const category = categories.find(
@@ -27,24 +25,16 @@ function ExpenseItem({ exp }) {
     return category ? category.name : "Unknown Category";
   };
 
+  const dispatch = useDispatch();
+
   const handleDelete = async (event) => {
     event.preventDefault();
-    try {
-      const result = await fetch(`${API_URL}/expenses/${exp.id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (!result.ok) {
-        alert("Something went wrong. Please try again later");
-      } else {
-        const updatedExpenses = expenses.filter((e) => e.id !== exp.id);
-        setExpenses(updatedExpenses);
-      }
-    } catch (error) {
-      //console.log("error", error);
+    if (loggedInUser) {
+      deleteExpenseAPI(token, exp.id);
+      const updatedExpenses = expenses.filter((e) => e.id !== exp.id);
+      setExpenses(updatedExpenses);
+    } else {
+      dispatch(deleteExpense(exp.id));
     }
   };
   const handleEdit = () => {
@@ -52,12 +42,12 @@ function ExpenseItem({ exp }) {
   };
   return (
     <div>
-          <p>
-            {day} {month}
-          </p>
+      <p>
+        {day} {month}
+      </p>
       <div className="d-flex  justify-content-between">
         <div className="d-flex">
-          {isLoggedInUser ? (
+          {loggedInUser ? (
             <p>{exp.category.name}</p>
           ) : (
             <p> {getCategoryName(exp.category)} </p>

@@ -1,24 +1,34 @@
 import React, { useContext, useState } from "react";
-import { UserContext } from "../../App";
+import { ExpenseContext, UserContext } from "../../App";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from 'react-redux'; 
-import { expenseSlice, addExpense } from "../../reducers/expense";
-import { selectCategories } from "../../reducers/category"; 
+import { useDispatch, useSelector } from "react-redux";
+import { addExpense } from "../../reducers/expense";
+import category, { selectCategories } from "../../reducers/category";
+import { CategoryContext } from "../../App";
+import { createExpenseAPI } from "../../service/expenseAPI";
 
 function ExpenseForm({ setActiveComponent }) {
   const API_URL = import.meta.env.VITE_API_URL;
   const { loggedInUser, token } = useContext(UserContext);
-  const categories = useSelector(selectCategories); 
+  const {expenses, setExpenses} = useContext(ExpenseContext);
+  const { expenseCategories } = useContext(CategoryContext);
+  const selector = useSelector(selectCategories);
+  const selectExpenseCategories = selector.filter(
+    (cat) => cat.type === "CATEGORY_EXPENSE"
+  );
+  const categoriesToShow = loggedInUser
+    ? expenseCategories
+    : selectExpenseCategories;
   const [expenseInput, setExpenseInput] = useState({
     amount: "",
     description: "",
-    user: loggedInUser ? loggedInUser.id : "", 
-    category: categories.length > 0 ? categories[0].id : "",
+    user: loggedInUser ? loggedInUser.id : "",
+    category: categoriesToShow.length > 0 ? categoriesToShow[0].id : "",
     date: new Date().toISOString().split("T")[0],
   });
 
   const navigate = useNavigate();
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -28,8 +38,6 @@ function ExpenseForm({ setActiveComponent }) {
     }));
   };
 
-  console.log(expenseInput);
-  
   const handleSubmit = async (event) => {
     event.preventDefault();
     
@@ -37,40 +45,20 @@ function ExpenseForm({ setActiveComponent }) {
     const newExpense = { ...expenseInput, expenseDate: date };
 
     if (loggedInUser) {
-      // Logged-in user send to backend
-      try {
-        const result = await fetch(`${API_URL}/expenses`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(newExpense),
-        });
-
-        if (result.ok) {
-          const createdExpense = await result.json();
-          setExpenses([...expenses, createdExpense.data]);
-          setActiveComponent("dashboard");
-          navigate("/dashboard");
-        } else {
-          throw new Error("Failed to save expense");
-        }
-      } catch (error) {
-        console.error("Error submitting expense:", error);
-      }
+      const createdExpense = createExpenseAPI(newExpense, token);
+      setExpenses([...expenses, createdExpense]);
+      navigate("/dashboard");
     } else {
-      // Guest user save to local storage using Redux slice
       dispatch(addExpense(newExpense));
-      setExpenseInput({
-        amount: "",
-        description: "",
-        category: categories.length > 0 ? categories[0].id : "",
-        date: new Date().toISOString().split("T")[0],
-      });
-      //setActiveComponent("dashboard");
       navigate("/dashboard");
     }
+
+    setExpenseInput({
+      amount: "",
+      description: "",
+      category: categoriesToShow.length > 0 ? categoriesToShow[0].id : "",
+      date: new Date().toISOString().split("T")[0],
+    });
   };
 
   const handleCancel = () => {
@@ -81,7 +69,9 @@ function ExpenseForm({ setActiveComponent }) {
     <div className="px-4 pt-4">
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label className="form-label mb-0" htmlFor="date">Date</label>
+          <label className="form-label mb-0" htmlFor="date">
+            Date
+          </label>
           <input
             id="date"
             type="date"
@@ -92,20 +82,26 @@ function ExpenseForm({ setActiveComponent }) {
             required
           />
 
-          <label className="form-label mb-0" htmlFor="category-name">Category</label>
+          <label className="form-label mb-0" htmlFor="category-name">
+            Category
+          </label>
           <select
             id="category-name"
             className="form-select mb-3"
             name="category"
             onChange={handleChange}
-            value={expenseInput.category} 
+            value={expenseInput.category}
           >
-            {categories.map((item, index) => (
-              <option key={index} value={item.id}>{item.name}</option>
+            {categoriesToShow.map((item, index) => (
+              <option key={index} value={item.id}>
+                {item.name}
+              </option>
             ))}
           </select>
 
-          <label className="form-label mb-0" htmlFor="amount">Amount</label>
+          <label className="form-label mb-0" htmlFor="amount">
+            Amount
+          </label>
           <input
             id="amount"
             type="number"
@@ -117,7 +113,9 @@ function ExpenseForm({ setActiveComponent }) {
             required
           />
 
-          <label className="form-label mb-0" htmlFor="description">Description</label>
+          <label className="form-label mb-0" htmlFor="description">
+            Description
+          </label>
           <input
             id="description"
             type="text"

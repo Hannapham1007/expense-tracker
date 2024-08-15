@@ -3,11 +3,14 @@ import { ExpenseContext, UserContext } from "../../App";
 import { useNavigate, useParams } from "react-router-dom";
 import { CategoryContext } from "../../App";
 import Header from "../header/Header";
+import { useDispatch } from "react-redux";
+import { updateExpense } from "../../reducers/expense";
+import { updateExpenseAPI } from "../../service/expenseAPI";
 
 function EditExpenseItem() {
   const API_URL = import.meta.env.VITE_API_URL;
   const { loggedInUser, token } = useContext(UserContext);
-  const { expenses } = useContext(ExpenseContext);
+  const { expenses, setExpenses } = useContext(ExpenseContext);
   const { id } = useParams();
   const navigate = useNavigate();
   const { expenseCategories } = useContext(CategoryContext);
@@ -18,6 +21,9 @@ function EditExpenseItem() {
     category: "",
     date: "",
   });
+  const dispath = useDispatch();
+
+  const isLoggedIn = Boolean(loggedInUser);
 
   useEffect(() => {
     if (expenses && id) {
@@ -48,34 +54,21 @@ function EditExpenseItem() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
-      const date = new Date(expenseInput.date);
-      const formattedDate = date.toISOString();
-      const result = await fetch(`${API_URL}/expenses/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ ...expenseInput, expenseDate: formattedDate }),
-      });
-      if (!result.ok) {
-        alert("Failed to update expense");
-        setExpenseInput(expenseInput);
-      } else {
-        const data = await result.json();
-        setExpenseInput({
-          amount: "",
-          description: "",
-          user: loggedInUser.id,
-          category: expenseCategories.length > 0 ? expenseCategories[0].id : "",
-          date: new Date().toISOString().split("T")[0],
-        });
-        navigate("/dashboard");
-        window.location.reload();
-      }
-    } catch (error) {
-      //console.log("Error", error);
+
+    const date = new Date(expenseInput.date);
+    const formattedDate = date.toISOString();
+    const expenseToUpdate = { ...expenseInput, expenseDate: formattedDate };
+
+    if (isLoggedIn) {
+      const updatedExpenseToServer = updateExpenseAPI(expenseToUpdate, token, id);
+      setExpenses([...expenses, updatedExpenseToServer]);
+      navigate("/dashboard");
+
+    } else {
+      const updatedExpense = { ...expenseInput, id, date: formattedDate };
+      dispath(updateExpense(updatedExpense));
+      navigate("/dashboard");
+
     }
   };
   return (

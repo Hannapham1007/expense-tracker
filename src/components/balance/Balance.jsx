@@ -7,18 +7,16 @@ import { useNavigate } from "react-router-dom";
 import SearchBar from "../filter/SearchBar";
 import ChartBar from "../chart/ChartBar";
 import { useSelector } from "react-redux";
+import { selectExpenses } from "../../reducers/expense";
 
 function Balance() {
   const { expenses } = useContext(ExpenseContext);
   const { incomes } = useContext(IncomeContext);
   const [selectedMonth, setSelectedMonth] = useState("");
   const [filterText, setFilterText] = useState("");
-  const reduxExpense = useSelector(state => state.expense.expenses);
-  const {loggedInUser} = useContext(UserContext);
-  const isLoggedIn = Boolean(loggedInUser);
-  console.log(reduxExpense);
+  const expenseSelector = useSelector(selectExpenses);
+  const { loggedInUser } = useContext(UserContext);
   const navigate = useNavigate();
-
 
   useEffect(() => {
     const currentMonth = formatDate(new Date());
@@ -50,18 +48,39 @@ function Balance() {
     );
   };
 
-  const filteredList = (list) => list.filter((item) => filterByMonth(item) && filterByText(item));
+  const filteredList = (list) =>
+    list.filter((item) => filterByMonth(item) && filterByText(item));
   const filteredExpenses = filteredList(expenses);
   const filteredIncomes = filteredList(incomes);
 
-  const totalExp = filteredExpenses.reduce((total, exp) => total + parseFloat(exp.amount), 0);
-  const totalInc = filteredIncomes.reduce((total, inc) => total + parseFloat(inc.amount), 0);
+  console.log(filteredExpenses)
+  const totalExp = filteredExpenses.reduce(
+    (total, exp) => total + parseFloat(exp.amount),
+    0
+  );
+  const totalInc = filteredIncomes.reduce(
+    (total, inc) => total + parseFloat(inc.amount),
+    0
+  );
   const balance = totalInc - totalExp;
 
   const handleOnClickAddExpense = () => navigate("/add_transaction");
 
   const generateMonthlyData = () => {
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
     const incomeData = new Array(12).fill(0);
     const expenseData = new Array(12).fill(0);
 
@@ -97,7 +116,7 @@ function Balance() {
         </div>
         <div className="col-md-4 col-12 mb-3 px-2">
           <div className="form-bg px-2 py-2">
-          <label
+            <label
               className="form-label fw-bold  mb-0"
               style={{ color: "grey" }}
               htmlFor="month"
@@ -149,20 +168,14 @@ function Balance() {
           Add Transaction
         </button>
       </div>
-        <div className="col-sm-12 col-md-12 col-lg-9 px-2">
-          <ChartBar data={chartData} />
+      <div className="col-sm-12 col-md-12 col-lg-9 px-2">
+        <ChartBar data={chartData} />
       </div>
       <div>
-        
         <IncomeList filteredList={filteredIncomes}></IncomeList>
       </div>
       <div>
-        {
-          isLoggedIn ? ( <ExpenseList filteredList={filteredExpenses}></ExpenseList>) : (
-            <ExpenseList filteredList={reduxExpense}></ExpenseList>
-          )
-        }
-       
+        <ExpenseList filteredList={filteredExpenses}></ExpenseList>
       </div>
     </>
   );
