@@ -8,7 +8,6 @@ import { updateExpense } from "../../reducers/expense";
 import { updateExpenseAPI } from "../../service/expenseAPI";
 
 function EditExpenseItem() {
-  const API_URL = import.meta.env.VITE_API_URL;
   const { loggedInUser, token } = useContext(UserContext);
   const { expenses, setExpenses } = useContext(ExpenseContext);
   const { id } = useParams();

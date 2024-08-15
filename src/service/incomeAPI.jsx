@@ -1,14 +1,14 @@
 const API_URL = import.meta.env.VITE_API_URL;
 
-export const createExpenseAPI  = async (expense, token) =>{
+export const createIncomeAPI  = async (income, token) =>{
     try {
-        const response = await fetch(`${API_URL}/expenses`, {
+        const response = await fetch(`${API_URL}/incomes`, {
             method: "POST",
               headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
               },
-              body: JSON.stringify(expense),
+              body: JSON.stringify(income),
         });
 
         const data = await response.json();
@@ -19,15 +19,15 @@ export const createExpenseAPI  = async (expense, token) =>{
     }
 };
 
-export const updateExpenseAPI = async (expense, token, id) =>{
+export const updateIncomeAPI = async (income, token, id) =>{
     try {
-        const response = await fetch(`${API_URL}/expenses/${id}`, {
+        const response = await fetch(`${API_URL}/incomes/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify(expense),
+            body: JSON.stringify(income),
 
         });
 
@@ -41,9 +41,9 @@ export const updateExpenseAPI = async (expense, token, id) =>{
 
 };
 
-export const deleteExpenseAPI = async (token, id) =>{
+export const deleteIncomeAPI = async (token, id) =>{
     try {
-        const response  = await fetch(`${API_URL}/expenses/${id}`, {
+        const response  = await fetch(`${API_URL}/incomes/${id}`, {
             method: "DELETE", 
             headers: {
                 "Content-Type": "application/json",
@@ -60,9 +60,9 @@ export const deleteExpenseAPI = async (token, id) =>{
 };
 
 
-export const getExpenseAPI = async (token, id) =>{
+export const getIncomeAPI = async (token, id) =>{
     try {
-        const response = await fetch(`${API_URL}/expenses/${id}`,{
+        const response = await fetch(`${API_URL}/incomes/${id}`,{
             method:"GET",
             headers: {
                 "Content-Type": "application/json",

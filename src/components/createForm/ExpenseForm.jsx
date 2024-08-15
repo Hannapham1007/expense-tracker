@@ -3,14 +3,13 @@ import { ExpenseContext, UserContext } from "../../App";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addExpense } from "../../reducers/expense";
-import category, { selectCategories } from "../../reducers/category";
+import { selectCategories } from "../../reducers/category";
 import { CategoryContext } from "../../App";
 import { createExpenseAPI } from "../../service/expenseAPI";
 
 function ExpenseForm({ setActiveComponent }) {
-  const API_URL = import.meta.env.VITE_API_URL;
   const { loggedInUser, token } = useContext(UserContext);
-  const {expenses, setExpenses} = useContext(ExpenseContext);
+  const { expenses, setExpenses } = useContext(ExpenseContext);
   const { expenseCategories } = useContext(CategoryContext);
   const selector = useSelector(selectCategories);
   const selectExpenseCategories = selector.filter(
@@ -40,25 +39,19 @@ function ExpenseForm({ setActiveComponent }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
+
     const date = new Date(expenseInput.date).toISOString();
     const newExpense = { ...expenseInput, expenseDate: date };
 
     if (loggedInUser) {
-      const createdExpense = createExpenseAPI(newExpense, token);
+      const createdExpense = await createExpenseAPI(newExpense, token);
       setExpenses([...expenses, createdExpense]);
       navigate("/dashboard");
+      window.location.reload();
     } else {
       dispatch(addExpense(newExpense));
       navigate("/dashboard");
     }
-
-    setExpenseInput({
-      amount: "",
-      description: "",
-      category: categoriesToShow.length > 0 ? categoriesToShow[0].id : "",
-      date: new Date().toISOString().split("T")[0],
-    });
   };
 
   const handleCancel = () => {

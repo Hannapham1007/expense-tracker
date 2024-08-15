@@ -8,6 +8,7 @@ import SearchBar from "../filter/SearchBar";
 import ChartBar from "../chart/ChartBar";
 import { useSelector } from "react-redux";
 import { selectExpenses } from "../../reducers/expense";
+import { selectIncomes } from "../../reducers/income";
 
 function Balance() {
   const { expenses } = useContext(ExpenseContext);
@@ -15,8 +16,10 @@ function Balance() {
   const [selectedMonth, setSelectedMonth] = useState("");
   const [filterText, setFilterText] = useState("");
   const expenseSelector = useSelector(selectExpenses);
+  const incomeSelector = useSelector(selectIncomes);
   const { loggedInUser } = useContext(UserContext);
   const navigate = useNavigate();
+
 
   useEffect(() => {
     const currentMonth = formatDate(new Date());
@@ -48,8 +51,7 @@ function Balance() {
     );
   };
 
-  const filteredList = (list) =>
-    list.filter((item) => filterByMonth(item) && filterByText(item));
+  const filteredList = (list) =>list.filter((item) => filterByMonth(item) && filterByText(item));
   const filteredExpenses = filteredList(expenses);
   const filteredIncomes = filteredList(incomes);
 
@@ -116,13 +118,6 @@ function Balance() {
         </div>
         <div className="col-md-4 col-12 mb-3 px-2">
           <div className="form-bg px-2 py-2">
-            <label
-              className="form-label fw-bold  mb-0"
-              style={{ color: "grey" }}
-              htmlFor="month"
-            >
-              Current Month
-            </label>
             <input
               id="month"
               type="month"

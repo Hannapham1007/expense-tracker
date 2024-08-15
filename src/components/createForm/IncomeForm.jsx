@@ -1,81 +1,54 @@
 import React, { useContext, useState } from "react";
 import { CategoryContext, IncomeContext, UserContext } from "../../App";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { createIncomeAPI } from "../../service/incomeAPI";
+import { selectCategories } from "../../reducers/category";
+import { addIncome } from "../../reducers/income";
 
 function IncomeForm({ setActiveComponent }) {
-  const API_URL = import.meta.env.VITE_API_URL;
-  const [category, setCategory] = useState({});
   const { loggedInUser, token } = useContext(UserContext);
   const { incomes, setIncomes } = useContext(IncomeContext);
   const { incomeCategories } = useContext(CategoryContext);
+  const selector = useSelector(selectCategories);
+  const selectIncomeCategories = selector.filter((cat) => cat.type === "CATEGORY_INCOME");
+  const categoriesToShow = loggedInUser ? incomeCategories : selectIncomeCategories;
   const [incomeInput, setIncomeInput] = useState({
     amount: "",
     description: "",
-    user: loggedInUser.id,
-    category: incomeCategories.length > 0 ? incomeCategories[0].id : "",
+    user: loggedInUser ? loggedInUser.id : "",
+    category: categoriesToShow.length > 0 ? categoriesToShow[0].id : "",
     date: new Date().toISOString().split("T")[0],
   });
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    if (name === "category") {
-      setCategory(value);
-    }
-    if (name === "date") {
-      setIncomeInput((inputData) => ({
-        ...inputData,
-        [name]: value,
-      }));
-    } else {
-      setIncomeInput((inputData) => ({
-        ...inputData,
-        [name]: value,
-      }));
-    }
+    setIncomeInput((inputData) => ({...inputData, [name]: value}));
+   
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    try {
-      const date = new Date(incomeInput.date);
-      const formattedDate = date.toISOString();
-      const result = await fetch(`${API_URL}/incomes`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ ...incomeInput, incomeDate: formattedDate }),
-      });
-      if (!result.ok) {
-        setIncomeInput({
-          amount: "",
-          description: "",
-          user: loggedInUser.id,
-          category: incomeCategories.length > 0 ? incomeCategories[0].id : "",
-          date: new Date().toISOString().split("T")[0],
-        });
-      } else {
-        const createdIncome = await result.json();
-        setIncomes([...incomes, createdIncome.data]);
-        setIncomeInput({
-          amount: "",
-          description: "",
-          user: loggedInUser.id,
-          category: incomeCategories.length > 0 ? incomeCategories[0].id : "",
-          date: new Date().toISOString().split("T")[0],
-        });
-        navigate("/dashboard");
-        setActiveComponent("dashboard");
-      }
-    } catch (error) {
-      //console.log("Error", error);
+    const date = new Date(incomeInput.date).toISOString();
+    const newIncome = { ...incomeInput, incomeDate: date };
+
+    if (loggedInUser) {
+      const createdIncome = await createIncomeAPI(newIncome, token);
+      setIncomes([...incomes, createdIncome]);
+      navigate("/dashboard");
+      window.location.reload();
+    } else {
+      dispatch(addIncome(newIncome));
+      navigate("/dashboard");
     }
+
   };
   const handleCancel = () => {
-    //setActiveComponent("dashboard");
     navigate("/dashboard");
   };
 
@@ -104,7 +77,7 @@ function IncomeForm({ setActiveComponent }) {
             name="category"
             onChange={handleChange}
           >
-            {incomeCategories.map((item, index) => (
+            {categoriesToShow.map((item, index) => (
               <option key={index} value={item.id}>
                 {item.name}
               </option>

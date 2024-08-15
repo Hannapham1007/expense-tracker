@@ -17,9 +17,10 @@ import Profile from "./components/profile/Profile";
 import EditProfile from "./components/profile/EditProfile";
 import Auth from "./components/authentication/Auth";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import { expenseSlice } from "./reducers/expense";
 import { categorySlice } from "./reducers/category";
+import { incomeSlice, selectIncomes } from "./reducers/income";
 
 const CategoryContext = createContext();
 const ExpenseContext = createContext();
@@ -37,7 +38,6 @@ function App() {
   const [loggedInUser, setLoggedInUser] = useState(null);
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("loggedInUser"));
     const storedToken = localStorage.getItem("token");
@@ -147,7 +147,8 @@ function App() {
 
   const reducer = combineReducers({
     expense: expenseSlice.reducer,
-    category: categorySlice.reducer
+    category: categorySlice.reducer,
+    income: incomeSlice.reducer
   })
 
   const store = configureStore({reducer})

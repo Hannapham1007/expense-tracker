@@ -4,37 +4,43 @@ import { MdOutlineModeEdit } from "react-icons/md";
 import { MdOutlineDelete } from "react-icons/md";
 import { IncomeContext, UserContext } from "../../App";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { selectCategories } from "../../reducers/category";
+import { deleteIncome } from "../../reducers/income";
+import { deleteIncomeAPI } from "../../service/incomeAPI";
 
 function IncomeItem({ inc }) {
-  const API_URL = import.meta.env.VITE_API_URL;
   const { incomes, setIncomes } = useContext(IncomeContext);
-  const { token } = useContext(UserContext);
+  const { loggedInUser, token } = useContext(UserContext);
   const navigate = useNavigate();
-  const dateString = inc.incomeDate;
+  const dateString = inc.incomeDate || inc.date;
   const date = new Date(dateString);
   const day = date.getDate();
   const month = date.toLocaleString("default", { month: "short" });
+  const categories = useSelector(selectCategories);
+  const getCategoryName = (categoryId) => {
+    const category = categories.find(
+      (cat) => String(cat.id) === String(categoryId)
+    );
+    return category ? category.name : "Unknown Category";
+  };
+
+  const dispatch = useDispatch();
 
   const handleDelete = async (event) => {
     event.preventDefault();
-    try {
-      const result = await fetch(`${API_URL}/incomes/${inc.id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (!result.ok) {
-        alert("Something went wrong. Please try again later");
-      } else {
-        const updatedIncomes = incomes.filter((e) => e.id !== inc.id);
-        setIncomes(updatedIncomes);
-      }
-    } catch (error) {
-      console.log("error", error);
+
+    if(loggedInUser){
+      deleteIncomeAPI(token, inc.id);
+      const updatedIncomes = incomes.filter((i)=> i.id !== inc.id);
+      setIncomes(updatedIncomes);
+    }else{
+      dispatch(deleteIncome(inc.id));
     }
+
+ 
   };
+
   const handleEdit = () => {
     navigate(`/edit_income/${inc.id}`);
   };

@@ -37,6 +37,7 @@ function ExpenseItem({ exp }) {
       dispatch(deleteExpense(exp.id));
     }
   };
+  
   const handleEdit = () => {
     navigate(`/edit_expense/${exp.id}`);
   };

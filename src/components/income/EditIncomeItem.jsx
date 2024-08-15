@@ -3,11 +3,13 @@ import { IncomeContext, UserContext } from "../../App";
 import { useNavigate, useParams } from "react-router-dom";
 import { CategoryContext } from "../../App";
 import Header from "../header/Header";
+import { useDispatch } from "react-redux";
+import { updateIncomeAPI } from "../../service/incomeAPI";
+import {updateIncome} from "../../reducers/income";
 
 function EditIncomeItem() {
-  const API_URL = import.meta.env.VITE_API_URL;
   const { loggedInUser, token } = useContext(UserContext);
-  const { incomes } = useContext(IncomeContext);
+  const { incomes, setIncomes } = useContext(IncomeContext);
   const { id } = useParams();
   const navigate = useNavigate();
   const { incomeCategories } = useContext(CategoryContext);
@@ -18,6 +20,10 @@ function EditIncomeItem() {
     category: "",
     date: "",
   });
+  const dispatch = useDispatch();
+
+  const isLoggedIn = Boolean(loggedInUser);
+
   useEffect(() => {
     if (incomes && id) {
       const income = incomes.find((exp) => Number(exp.id) === Number(id));
@@ -47,35 +53,23 @@ function EditIncomeItem() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
-      const date = new Date(incomeInput.date);
-      const formattedDate = date.toISOString();
-      const result = await fetch(`${API_URL}/incomes/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ ...incomeInput, incomeDate: formattedDate }),
-      });
-      if (!result.ok) {
-        alert("Failed to update income");
-        setIncomeInput(incomeInput);
-      } else {
-        const data = await result.json();
-        setIncomeInput({
-          amount: "",
-          description: "",
-          user: loggedInUser.id,
-          category: "",
-          date: new Date().toISOString().split("T")[0],
-        });
-        navigate("/dashboard");
-        window.location.reload();
-      }
-    } catch (error) {
-      //console.log("Error", error);
+
+    const date = new Date(incomeInput.date);
+    const formattedDate = date.toISOString();
+    const incomeToUpdate = {...incomeInput, incomeDate: formattedDate};
+
+    if(isLoggedIn){
+      const updatedIncomeToServer = updateIncomeAPI(incomeToUpdate, token, id);
+      setIncomes([...incomes, updatedIncomeToServer]);
+      navigate("/dashboard");
     }
+    else{
+      const updatedIncome = {...incomeInput, id, date: formattedDate};
+      dispatch(updateIncome(updatedIncome));
+      navigate("/dashboard");
+
+    }
+    
   };
   return (
     <>

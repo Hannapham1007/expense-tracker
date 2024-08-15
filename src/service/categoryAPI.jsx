@@ -53,3 +53,20 @@ export const updateCategoryAPI = async (name, type, user, categoryId, token) => 
     throw error;
   }
 };
+
+export const getCategoryAPI = async (token, id) =>{
+  try {
+      const response = await fetch(`${API_URL}/categories/user/${id}`,{
+          method:"GET",
+          headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`
+          }, 
+      });
+
+      const data = await response.json();
+      return data;        
+  } catch (error) {
+      throw new Error;
+  }
+};
