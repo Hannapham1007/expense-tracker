@@ -2,10 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import { IncomeContext, UserContext } from "../../App";
 import { useNavigate, useParams } from "react-router-dom";
 import { CategoryContext } from "../../App";
-import Header from "../header/Header";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateIncomeAPI } from "../../service/incomeAPI";
-import {updateIncome} from "../../reducers/income";
+import { selectIncomes, updateIncome } from "../../reducers/income";
+import { selectCategories } from "../../reducers/category";
 
 function EditIncomeItem() {
   const { loggedInUser, token } = useContext(UserContext);
@@ -13,20 +13,29 @@ function EditIncomeItem() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { incomeCategories } = useContext(CategoryContext);
+  const selector = useSelector(selectCategories);
+  const selectIncomeCategories = selector.filter(
+    (cat) => cat.type === "CATEGORY_INCOME"
+  );
+  const categoriesToShow = loggedInUser
+    ? incomeCategories
+    : selectIncomeCategories;
   const [incomeInput, setIncomeInput] = useState({
     amount: "",
     description: "",
     user: "",
-    category: "",
+    category: categoriesToShow.length > 0 ? categoriesToShow[0].id : "",
     date: "",
   });
   const dispatch = useDispatch();
+  const selectorIncomes = useSelector(selectIncomes);
 
   const isLoggedIn = Boolean(loggedInUser);
 
   useEffect(() => {
-    if (incomes && id) {
-      const income = incomes.find((exp) => Number(exp.id) === Number(id));
+    let income;
+    if (loggedInUser) {
+      income = incomes.find((exp) => Number(exp.id) === Number(id));
       if (income) {
         // Split date string to get yyyy, mm, and dd parts
         const [yyyy, mm, dd] = income.incomeDate.split("T")[0].split("-");
@@ -40,6 +49,13 @@ function EditIncomeItem() {
           date: formattedPrevDate,
         });
       }
+    } else {
+      income = selectorIncomes.find((inc) => String(inc.id) === String(id));
+      // Split date string to get yyyy, mm, and dd parts
+      const [yyyy, mm, dd] = income.date.split("T")[0].split("-");
+      // Format the date to yyyy-mm-dd
+      const formattedPrevDate = `${yyyy}-${mm}-${dd}`;
+      setIncomeInput({ ...income, date: formattedPrevDate });
     }
   }, [incomes, id]);
 
@@ -56,20 +72,17 @@ function EditIncomeItem() {
 
     const date = new Date(incomeInput.date);
     const formattedDate = date.toISOString();
-    const incomeToUpdate = {...incomeInput, incomeDate: formattedDate};
+    const incomeToUpdate = { ...incomeInput, incomeDate: formattedDate };
 
-    if(isLoggedIn){
+    if (isLoggedIn) {
       const updatedIncomeToServer = updateIncomeAPI(incomeToUpdate, token, id);
       setIncomes([...incomes, updatedIncomeToServer]);
       navigate("/dashboard");
-    }
-    else{
-      const updatedIncome = {...incomeInput, id, date: formattedDate};
+    } else {
+      const updatedIncome = { ...incomeInput, id, date: formattedDate };
       dispatch(updateIncome(updatedIncome));
       navigate("/dashboard");
-
     }
-    
   };
   return (
     <>
@@ -99,7 +112,7 @@ function EditIncomeItem() {
                 name="category"
                 onChange={handleChange}
               >
-                {incomeCategories.map((item) => (
+                {categoriesToShow.map((item) => (
                   <option key={item.id} value={item.id}>
                     {item.name}
                   </option>

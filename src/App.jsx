@@ -6,7 +6,6 @@ import CategoryList from "./components/category/CategoryList";
 import CategoryForm from "./components/createForm/CategoryForm";
 import EditExpenseItem from "./components/expense/EditExpenseItem";
 import EditIncomeItem from "./components/income/EditIncomeItem";
-import WelcomePage from "./components/welcome/WelcomePage";
 import PageNotFound from "./components/pagenotfound/PageNotFound";
 import Transaction from "./components/createForm/Transaction";
 import Loading from "./components/loading/Loading";
@@ -148,7 +147,7 @@ function App() {
   const reducer = combineReducers({
     expense: expenseSlice.reducer,
     category: categorySlice.reducer,
-    income: incomeSlice.reducer
+    income: incomeSlice.reducer,
   })
 
   const store = configureStore({reducer})

@@ -18,7 +18,9 @@ const saveStateToLocalStorage = (key, state) => {
 export const expenseSlice = createSlice({
   name: "expense",
   initialState: {
-    expenses: loadStateFromLocalStorage("expense"),
+    expenses: Array.isArray(loadStateFromLocalStorage("expense"))
+      ? loadStateFromLocalStorage("expense")
+      : [],
   },
   reducers: {
     addExpense: (state, action) => {
@@ -39,9 +41,9 @@ export const expenseSlice = createSlice({
       const index = state.expenses.findIndex(
         (exp) => exp.id === action.payload.id
       );
-      if (index !== 1) {
+      if (index !== -1) {
         state.expenses[index] = action.payload;
-        saveStateToLocalStorage("expense", state);
+        saveStateToLocalStorage("expense", state.expenses);
       }
     },
 
@@ -54,7 +56,8 @@ export const expenseSlice = createSlice({
   },
 });
 
-export const { addExpense, deleteExpense, updateExpense } = expenseSlice.actions;
+export const { addExpense, deleteExpense, updateExpense } =
+  expenseSlice.actions;
 
 export const selectExpenses = (state) => state.expense.expenses;
 

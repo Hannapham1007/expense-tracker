@@ -40,7 +40,7 @@ function SideBar() {
   }, [location, loggedInUser]);
 
   const handleLogOut = () => {
-    localStorage.clear()
+    localStorage.removeItem("loggedInUser", "token");
     window.location.reload();
     navigate("/");
   };

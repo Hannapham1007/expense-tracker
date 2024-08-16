@@ -18,7 +18,7 @@ const saveStateToLocalStorage = (key, state) => {
 export const incomeSlice = createSlice({
   name: "income",
   initialState: {
-    incomes: loadStateFromLocalStorage("income"),
+    incomes: Array.isArray(loadStateFromLocalStorage("income")) ? loadStateFromLocalStorage("income") : [],
   },
   reducers: {
     addIncome: (state, action) => {
@@ -37,17 +37,17 @@ export const incomeSlice = createSlice({
 
     updateIncome: (state, action) => {
       const index = state.incomes.findIndex(
-        (exp) => exp.id === action.payload.id
+        (inc) => inc.id === action.payload.id
       );
-      if (index !== 1) {
+      if (index !== - 1) {
         state.incomes[index] = action.payload;
-        saveStateToLocalStorage("income", state);
+        saveStateToLocalStorage("income", state.incomes);
       }
     },
 
     deleteIncome: (state, action) => {
       state.incomes = state.incomes.filter(
-        (exp) => exp.id !== action.payload
+        (inc) => inc.id !== action.payload
       );
       saveStateToLocalStorage("income", state);
     },

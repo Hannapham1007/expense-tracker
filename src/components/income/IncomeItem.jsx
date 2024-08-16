@@ -51,7 +51,11 @@ function IncomeItem({ inc }) {
       </p>
       <div className="d-flex  justify-content-between">
         <div className="d-flex">
-          <p>{inc.category.name}</p>
+        {loggedInUser ? (
+            <p>{inc.category.name}</p>
+          ) : (
+            <p> {getCategoryName(inc.category)} </p>
+          )}
         </div>
         <div>
           <p>{inc.amount} kr</p>

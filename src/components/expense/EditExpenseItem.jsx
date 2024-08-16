@@ -2,10 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import { ExpenseContext, UserContext } from "../../App";
 import { useNavigate, useParams } from "react-router-dom";
 import { CategoryContext } from "../../App";
-import Header from "../header/Header";
-import { useDispatch } from "react-redux";
-import { updateExpense } from "../../reducers/expense";
+import { useDispatch, useSelector } from "react-redux";
+import { selectExpenses, updateExpense } from "../../reducers/expense";
 import { updateExpenseAPI } from "../../service/expenseAPI";
+import { selectCategories } from "../../reducers/category";
 
 function EditExpenseItem() {
   const { loggedInUser, token } = useContext(UserContext);
@@ -13,20 +13,29 @@ function EditExpenseItem() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { expenseCategories } = useContext(CategoryContext);
+  const selector = useSelector(selectCategories);
+  const selectExpenseCategories = selector.filter(
+    (cat) => cat.type === "CATEGORY_EXPENSE"
+  );
+  const categoriesToShow = loggedInUser
+    ? expenseCategories
+    : selectExpenseCategories;
   const [expenseInput, setExpenseInput] = useState({
     amount: "",
     description: "",
     user: "",
-    category: "",
+    category: categoriesToShow.length > 0 ? categoriesToShow[0].id : "",
     date: "",
   });
   const dispath = useDispatch();
+  const selectorExpenses = useSelector(selectExpenses);
 
   const isLoggedIn = Boolean(loggedInUser);
 
   useEffect(() => {
-    if (expenses && id) {
-      const expense = expenses.find((exp) => Number(exp.id) === Number(id));
+    let expense;
+    if (loggedInUser) {
+      expense = expenses.find((exp) => Number(exp.id) === Number(id));
       if (expense) {
         // Split date string to get yyyy, mm, and dd parts
         const [yyyy, mm, dd] = expense.expenseDate.split("T")[0].split("-");
@@ -39,6 +48,15 @@ function EditExpenseItem() {
           category: expense.category.id,
           date: formattedPrevDate,
         });
+      }
+    } else {
+      expense = selectorExpenses.find((exp) => String(exp.id) === String(id));
+      if (expense) {
+        // Split date string to get yyyy, mm, and dd parts
+        const [yyyy, mm, dd] = expense.date.split("T")[0].split("-");
+        // Format the date to yyyy-mm-dd
+        const formattedPrevDate = `${yyyy}-${mm}-${dd}`;
+        setExpenseInput({ ...expense, date: formattedPrevDate });
       }
     }
   }, [expenses, id]);
@@ -59,15 +77,17 @@ function EditExpenseItem() {
     const expenseToUpdate = { ...expenseInput, expenseDate: formattedDate };
 
     if (isLoggedIn) {
-      const updatedExpenseToServer = updateExpenseAPI(expenseToUpdate, token, id);
+      const updatedExpenseToServer = updateExpenseAPI(
+        expenseToUpdate,
+        token,
+        id
+      );
       setExpenses([...expenses, updatedExpenseToServer]);
       navigate("/dashboard");
-
     } else {
       const updatedExpense = { ...expenseInput, id, date: formattedDate };
       dispath(updateExpense(updatedExpense));
       navigate("/dashboard");
-
     }
   };
   return (
@@ -99,7 +119,7 @@ function EditExpenseItem() {
                 onChange={handleChange}
                 value={expenseInput.category}
               >
-                {expenseCategories.map((item) => (
+                {categoriesToShow.map((item) => (
                   <option key={item.id} value={item.id}>
                     {item.name}
                   </option>

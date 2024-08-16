@@ -55,16 +55,31 @@ function Balance() {
   const filteredExpenses = filteredList(expenses);
   const filteredIncomes = filteredList(incomes);
 
-  console.log(filteredExpenses)
-  const totalExp = filteredExpenses.reduce(
+  const totalExpLoggedInUser = filteredExpenses.reduce(
     (total, exp) => total + parseFloat(exp.amount),
     0
   );
-  const totalInc = filteredIncomes.reduce(
+  const totalExpGuest = expenseSelector.reduce(
+    (total, exp) => total + parseFloat(exp.amount),
+    0
+  );
+  const totalExp = loggedInUser ? totalExpLoggedInUser : totalExpGuest;
+
+  console.log(totalExp)
+
+  const totalIncLoggedInUser = filteredIncomes.reduce(
     (total, inc) => total + parseFloat(inc.amount),
     0
   );
+  const totalIncGuest = incomeSelector.reduce(
+    (total, inc) => total + parseFloat(inc.amount),
+    0
+  );
+  const totalInc = loggedInUser ? totalIncLoggedInUser : totalIncGuest;
+
   const balance = totalInc - totalExp;
+
+  
 
   const handleOnClickAddExpense = () => navigate("/add_transaction");
 
@@ -86,13 +101,16 @@ function Balance() {
     const incomeData = new Array(12).fill(0);
     const expenseData = new Array(12).fill(0);
 
-    incomes.forEach((income) => {
-      const date = new Date(income.incomeDate);
+    const incomesToShowInChart = loggedInUser ? incomes : incomeSelector;
+    const expensesToShowInChart = loggedInUser ? expenses : expenseSelector;
+
+    incomesToShowInChart.forEach((income) => {
+      const date = new Date(income.incomeDate || income.date);
       incomeData[date.getMonth()] += parseFloat(income.amount);
     });
 
-    expenses.forEach((expense) => {
-      const date = new Date(expense.expenseDate);
+    expensesToShowInChart.forEach((expense) => {
+      const date = new Date(expense.expenseDate || expense.date);
       expenseData[date.getMonth()] += parseFloat(expense.amount);
     });
 
@@ -106,6 +124,12 @@ function Balance() {
   };
 
   const chartData = generateMonthlyData();
+
+  const expensesToShow = loggedInUser ? filteredExpenses : expenseSelector;
+  const incomesToShow = loggedInUser ? filteredIncomes : incomeSelector;
+  console.log(expensesToShow)
+  console.log(incomesToShow)
+
 
   return (
     <>
@@ -167,10 +191,10 @@ function Balance() {
         <ChartBar data={chartData} />
       </div>
       <div>
-        <IncomeList filteredList={filteredIncomes}></IncomeList>
+        <IncomeList filteredList={incomesToShow}></IncomeList>
       </div>
       <div>
-        <ExpenseList filteredList={filteredExpenses}></ExpenseList>
+        <ExpenseList filteredList={expensesToShow}></ExpenseList>
       </div>
     </>
   );
