@@ -9,6 +9,7 @@ import ChartBar from "../chart/ChartBar";
 import { useSelector } from "react-redux";
 import { selectExpenses } from "../../reducers/expense";
 import { selectIncomes } from "../../reducers/income";
+import { selectCategories } from "../../reducers/category";
 
 function Balance() {
   const { expenses } = useContext(ExpenseContext);
@@ -17,9 +18,9 @@ function Balance() {
   const [filterText, setFilterText] = useState("");
   const expenseSelector = useSelector(selectExpenses);
   const incomeSelector = useSelector(selectIncomes);
+  const categorySelector = useSelector(selectCategories);
   const { loggedInUser } = useContext(UserContext);
   const navigate = useNavigate();
-
 
   useEffect(() => {
     const currentMonth = formatDate(new Date());
@@ -33,6 +34,8 @@ function Balance() {
   };
 
   const handleSelectedMonth = (e) => setSelectedMonth(e.target.value);
+
+  /** Logged-in users */
 
   const filterByMonth = (item) => {
     const transactionDate = new Date(item.incomeDate || item.expenseDate);
@@ -51,53 +54,63 @@ function Balance() {
     );
   };
 
-  const filteredList = (list) =>list.filter((item) => filterByMonth(item) && filterByText(item));
+  const filteredList = (list) =>
+    list.filter((item) => filterByMonth(item) && filterByText(item));
   const filteredExpenses = filteredList(expenses);
   const filteredIncomes = filteredList(incomes);
 
-  const totalExpLoggedInUser = filteredExpenses.reduce(
-    (total, exp) => total + parseFloat(exp.amount),
-    0
-  );
-  const totalExpGuest = expenseSelector.reduce(
-    (total, exp) => total + parseFloat(exp.amount),
-    0
-  );
-  const totalExp = loggedInUser ? totalExpLoggedInUser : totalExpGuest;
+  /** Guest users */
 
-  console.log(totalExp)
+  const getCategoryNameById = (id) => {
+    const category = categorySelector.find((cat) => String(cat.id) === String(id));
+    return category ? category.name : "";
+  }
 
-  const totalIncLoggedInUser = filteredIncomes.reduce(
-    (total, inc) => total + parseFloat(inc.amount),
-    0
-  );
-  const totalIncGuest = incomeSelector.reduce(
-    (total, inc) => total + parseFloat(inc.amount),
-    0
-  );
-  const totalInc = loggedInUser ? totalIncLoggedInUser : totalIncGuest;
+  const filterByTextForGuestUser = (item) => {
+    const filterTextLower = filterText.toLowerCase();
+    const categoryName = getCategoryNameById(item.category)?.toLowerCase() || "";
+    const description = item.description?.toLowerCase() || "";
 
-  const balance = totalInc - totalExp;
+    return (
+      categoryName.includes(filterTextLower) ||
+      description.includes(filterTextLower)
+    );
+  };
+
+  const filterByMonthForGuestUser = (item) => {
+    const transactionDate = new Date(item.date);
+    const selectedDate = new Date(selectedMonth);
+    return (
+      transactionDate.getFullYear() === selectedDate.getFullYear() &&
+      transactionDate.getMonth() === selectedDate.getMonth()
+    );
+  };
+
+  const filteredListForGuestUser = (list) => list.filter((item) =>
+        filterByMonthForGuestUser(item) && filterByTextForGuestUser(item)
+    );
+
+  const filteredExpensesForGuestUser =filteredListForGuestUser(expenseSelector);
+  const filteredIncomesForGuestUser = filteredListForGuestUser(incomeSelector);
+
+  const expensesToShow = loggedInUser ? filteredExpenses: filteredExpensesForGuestUser;
+  const incomesToShow = loggedInUser ? filteredIncomes : filteredIncomesForGuestUser;
 
   
+  const totalExpLoggedInUser = filteredExpenses.reduce((total, exp) => total + parseFloat(exp.amount),0);
+  const totalIncLoggedInUser = filteredIncomes.reduce((total, inc) => total + parseFloat(inc.amount),0);
+
+  const totalExpGuest = expenseSelector.reduce((total, exp) => total + parseFloat(exp.amount), 0);
+  const totalIncGuest = incomeSelector.reduce((total, inc) => total + parseFloat(inc.amount),0);
+
+  const totalExp = loggedInUser ? totalExpLoggedInUser : totalExpGuest;
+  const totalInc = loggedInUser ? totalIncLoggedInUser : totalIncGuest;
+  const balance = totalInc - totalExp;
 
   const handleOnClickAddExpense = () => navigate("/add_transaction");
 
   const generateMonthlyData = () => {
-    const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",];
     const incomeData = new Array(12).fill(0);
     const expenseData = new Array(12).fill(0);
 
@@ -124,12 +137,6 @@ function Balance() {
   };
 
   const chartData = generateMonthlyData();
-
-  const expensesToShow = loggedInUser ? filteredExpenses : expenseSelector;
-  const incomesToShow = loggedInUser ? filteredIncomes : incomeSelector;
-  console.log(expensesToShow)
-  console.log(incomesToShow)
-
 
   return (
     <>
