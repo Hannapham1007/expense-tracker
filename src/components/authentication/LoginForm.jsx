@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { getUserById, signinAPI } from "../../service/userAPI";
 
 function LoginForm({ setLoading }) {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -19,28 +20,14 @@ function LoginForm({ setLoading }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
-        const res = await fetch(`${API_URL}/auth/signin`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(login),
-      });
-      if (!res.ok) {
-        setError(true);
-      } else {
-        //console.log("Login successful");
-        const data = await res.json();
-        const jwtToken = data.token;
-        localStorage.setItem("token", jwtToken);
-        fetchUser(data.id);
-        navigate("/dashboard");
-      }
-    } catch (error) {
-      //console.error('Error: ', error);
-    } finally {
-      setLoading(false);
-    }
+    const data = await signinAPI(login);
+    const jwtToken = data.token;
+    localStorage.setItem("token", jwtToken);
+    await getUserById(data.id);
+    fetchUser(data.id);
+    navigate("/dashboard");
   };
+
 
   const fetchUser = (id) => {
     fetch(`${API_URL}/users/${id}`)
@@ -91,7 +78,13 @@ function LoginForm({ setLoading }) {
               onChange={handleChange}
               required
             ></input>
-            {error ? ( <p className="text-danger mb-3">Username or password is incorrect</p>): ""}
+            {error ? (
+              <p className="text-danger mb-3">
+                Username or password is incorrect
+              </p>
+            ) : (
+              ""
+            )}
             <div className="d-flex justify-content-center">
               <button className="btn btn-bg" type="submit">
                 Sign In

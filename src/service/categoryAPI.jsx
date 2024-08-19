@@ -1,4 +1,5 @@
-const API_URL = import.meta.env.VITE_API_URL;
+/* eslint-disable no-useless-catch */
+  const API_URL = import.meta.env.VITE_API_URL;
 
 export const createCategoryAPI = async (category, token) => {
   try {
@@ -70,3 +71,40 @@ export const getCategoryAPI = async (token, id) =>{
       throw new Error;
   }
 };
+
+export const getIncomeCategoryAPI = async (token, userId) =>{
+  try {
+    const response = await fetch(`${API_URL}/categories/income/${userId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      }
+    });
+    const data = await response.json();
+    return data;
+    
+  } catch (error) {
+    throw new Error;
+    
+  }
+};
+
+export const getExpenseCategoryAPI = async (token, userId) =>{
+  try {
+    const response = await fetch(`${API_URL}/categories/expense/${userId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      }
+    });
+    const data = await response.json();
+    return data;
+    
+  } catch (error) {
+    throw new Error;
+    
+  }
+}
+
